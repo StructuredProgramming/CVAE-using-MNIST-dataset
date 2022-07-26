@@ -76,9 +76,9 @@ def train(epoch, model, train_loader, optimizer, num_classes):
     for batch_number, (data, labels) in enumerate(train_loader):
         data = Variable(data).view(data.shape[0], -1)
         labels = one_hot(labels, num_classes)
-        recon_batch, mu, logvar = model(data, labels)
+        reconstruction_batch, mu, logvar = model(data, labels)
         optimizer.zero_grad()
-        loss = loss_function(recon_batch, data, mu, logvar)
+        loss = loss_function(reconstruction_batch, data, mu, logvar)
         loss.backward()
         train_loss += loss.data
         optimizer.step()
@@ -111,9 +111,9 @@ def test():
         for batch_number, (data, labels) in enumerate(test_loader):
             data = Variable(data).view(data.shape[0], -1)
             data, labels = data, one_hot(labels, num_classes)
-            recon, mu, logvar = model(data, labels)
+            reconstruction_batch, mu, logvar = model(data, labels)
             # sum up batch loss
-            test_loss += loss_function(recon, data, mu, logvar).item()
+            test_loss += loss_function(reconstruction_batch, data, mu, logvar).item()
         
     test_loss /= len(test_loader.dataset)
     print('====> Test set loss: {:.4f}'.format(test_loss))
